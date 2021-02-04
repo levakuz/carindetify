@@ -4,10 +4,10 @@ import time
 import glob, os
 start = time.time()
 
-parent_dir = './ru/*'
+parent_dir = './dataset/*'
 number_tuple = []
 for pdf_file in glob.glob(os.path.join(parent_dir)):
-    #print (pdf_file)
+    print (pdf_file)
     number = read_and_image(pdf_file)
     number_tuple.append(number)
 f = open('test.txt', "w")
