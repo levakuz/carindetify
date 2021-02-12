@@ -67,7 +67,20 @@ def check_size(imagearr, arrpoints):
     print(y*lower)
     if x*lower > length1 or x*lower > length2 or y*lower > heigth1 or y*lower > heigth2 or x*upper < length1 or x*upper < length2 or y*upper < heigth1 or y*upper < heigth2:
         check = False
+    print(check)
     return check
+
+
+def find_biggest(arrpoint):
+    lengths = [0, 0, 0 ]
+    print(arrpoint)
+    for i in range(len(arrpoint)):
+        print(i)
+        lengths[i] = (abs(arrpoint[i][0][0] - arrpoint[i][-1][0]) * abs(arrpoint[i][0][1] - arrpoint[i][1][0]))
+        print(lengths[i])
+    largest = lengths.index(max(lengths))
+    return largest
+
 
 def check_minus(arrPoints):
     sorting = []
@@ -78,11 +91,19 @@ def check_minus(arrPoints):
             if abs(arrPoints[0][i][0] - arrPoints[0][j][0]) < 1:
                 print("Есть одинаковые")
                 sorting.append(0)
-                break
-                return sorting
+
             else:
                 sorting.append(1)
                 print("Все элементы уникальны")
+        # for j in range(i + 1, len(arrPoints[0])):
+        #     print(int(arrPoints[0][i][0]))
+        #     print(int(arrPoints[0][j][0]))
+        #     if abs(arrPoints[0][i][0] - arrPoints[0][j][0]) < 1 and abs(arrPoints[0][i][1] - arrPoints[0][j][1]) < 1:
+        #         print("Есть одинаковые")
+        #         print(sorting)
+        #         sorting.append(False)
+        #         break
+        #         return sorting
     return sorting
 
 
@@ -105,32 +126,138 @@ def check_equals(arrPoints):
 
 def check_number_by(text):
     check = []
-
-    for i in range(len(text)):
-        if len(text[i]) == 7:
-            for j in range(len(text[i])):
-                if j in {0,1,2,3,6}:
-                    if text[i][j].isnumeric():
-                        check.append(True)
+    if len(text) >= 5:
+        print("1")
+        for j in range(len(text)):
+            if text[0].isnumeric():
+                if len(text) == 7:
+                    if j in {0,1,6}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 5:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 6:
+                    if j in {0,1,5}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 4:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 8:
+                    if j in {0,1,2,3,7}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
                     else:
-                        check.append(False)
-                else:
-                    if text[i][j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
-                        check.append(True)
-                    else:
-                        check.append(False)
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 5:
+                    if j in {0,4}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 3:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+            else:
+                if len(text) == 7:
+                    if j in {4,5,6}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j in {0,1}:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 6:
+                    if j in {5}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j in {0}:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 8:
+                    if j in {5,6,7}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j in {0,1}:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 5:
+                    if j in {4}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 0:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
 
     if False in check or not check:
+        print(check)
         return False
     else:
-        return True
 
+        if len(text) >= 5:
+            return text
+
+
+# def check_number_by(text):
+#     check = []
+#
+#     for i in range(len(text)):
+#         if len(text[i]) == 7:
+#             for j in range(len(text[i])):
+#                 if j in {0,1,2,3,6}:
+#                     if text[i][j].isnumeric():
+#                         check.append(text[i])
+#                 #     else:
+#                 #         check.append(False)
+#                 # else:
+#                 #     if text[i][j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+#                 #         check.append(True)
+#                 #     else:
+#                 #         check.append(False)
+#
+#     if False in check or not check:
+#         return False
+#     else:
+#         for i in range(len(text)):
+#             if len(text[i]) == 7:
+#                 return text[i]
 
 def add_text(image, text):
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     # org
-    org = (50, 50)
+    org = (200, 200)
 
     # fontScale
     fontScale = 1
@@ -139,7 +266,7 @@ def add_text(image, text):
     color = (255, 0, 0)
 
     # Line thickness of 2 px
-    thickness = 2
+    thickness = 3
 
     # Using cv2.putText() method
     image = cv2.putText(image, text, org, font,
@@ -147,8 +274,8 @@ def add_text(image, text):
     return (image)
 
 
-def read_and_image(image):
-    textArr = 0
+def read_and_image(image ,folder):
+    new_text = 0
     # BLUR = 21
     # CANNY_THRESH_1 = 10
     # CANNY_THRESH_2 = 200
@@ -215,12 +342,19 @@ def read_and_image(image):
     #cv2.waitKey(20000)
 
     #print(image[-4:])
-    print(image)
+
     if image[-4:] == '.png':
         new_image = cv2.imread(image)
         cv2.imwrite(image[:-4] + '.jpg',new_image)
         image = image[:-4] + '.jpg'
+        print(image)
 
+    if image[-5:] == '.jpeg':
+        new_image = cv2.imread(image)
+        cv2.imwrite(image[:-5] + '.jpg', new_image)
+        image = image[:-5] + '.jpg'
+        print(image)
+    print(image[10:])
     rectDetector = RectDetector()
 
     optionsDetector = OptionsDetector()
@@ -260,16 +394,27 @@ def read_and_image(image):
                 # find standart
                 regionIds, stateIds, countLines = optionsDetector.predict(zones)
                 regionNames = optionsDetector.getRegionLabels(regionIds)
-                cv_imgs_masks
+                print(arrPoints)
+                # 0 = find_biggest(arrPoints)
 
                 # find text with postprocessing by standart
                 textArr = textDetector.predict(zones)
-                # textArr = textPostprocessing(textArr, regionNames)
+                textArr = textPostprocessing(textArr, regionNames)
                 print(textArr)
-                if check_number_by(textArr):
+                # textArr = np.sort(textArr, axis=0)
+                largest_text = textArr.index(max(textArr, key=len))
+                for i in range(len(textArr)):
+                    if len(textArr[i]) == 7:
+                        largest_text = i
+                print(textArr[largest_text])
+                new_text = check_number_by(textArr[largest_text])
+                if new_text:
+                    carimg = add_text(carimg, new_text)
+                    # cv2.imshow('123', carimg)
+                    # cv2.waitKey()
                     x_tuple = []
                     y_tuple = []
-                    is_circle = check_circle(carimg, arrPoints)
+                    # is_circle = check_circle(carimg, arrPoints)
                     """
                     #arrPoints = np.sort(arrPoints, axis=1)
                     s = arrPoints.sum(axis=2)
@@ -292,7 +437,7 @@ def read_and_image(image):
                     #     plt.show()
 
                     # print(is_circle)
-                    if arrPoints.size != 0 and not is_circle and arrPoints[0].size < 24:
+                    if arrPoints.size != 0 and arrPoints[0].size < 24:
                         # if arrPoints.size > 8:
                         #     for i in range(arrPoints[0].size):
                         #         summa1= arrPoints[0].sum(axis=1)
@@ -337,6 +482,13 @@ def read_and_image(image):
                             #print(x_tuple)
 
                             logoimg = cv2.imread('./gosnomer_evropa.png')
+                            img2gray = cv2.cvtColor(logoimg, cv2.COLOR_BGR2GRAY)
+                            ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
+                            mask_inv = cv2.bitwise_not(mask)
+                            logoimg = cv2.bitwise_and(logoimg, logoimg, mask=mask)
+
+                            #logoimg = np.dstack([bgr, alpha])  # Add the alpha channe
+
                             logoimg = cv2.resize(logoimg, (height_carimg, width_carimg))
                             # width = width_carimg
                             # height = height_carimg
@@ -349,7 +501,6 @@ def read_and_image(image):
 
                             # print(width)
                             # print(height)
-
                             pts1 = np.float32([up_left, up_right, down_left, down_right])
                             pts2 = np.float32([[0, 0], [width_logoimg, 0], [0, height_logoimg], [width_logoimg, height_logoimg]])
                             M = cv2.getPerspectiveTransform(pts2, pts1)
@@ -371,20 +522,19 @@ def read_and_image(image):
                             #     plt.imshow(splash)
                             #     plt.axis("off")
                             #     plt.show()
-                            cv2.imwrite('./output' + image[4:], carimg)
+                            cv2.imwrite('./' + folder + image[10:], carimg)
                         else:
-                            cv2.imwrite('./output' + image[4:], carimg)
-
+                            cv2.imwrite('./' + folder + image[10:], carimg)
                     else:
-                        cv2.imwrite('./output' + image[4:], carimg)
+                        cv2.imwrite('./'+ folder + image[10:], carimg)
                 else:
-                    cv2.imwrite('./output' + image[4:], carimg)
+                    cv2.imwrite('./'+ folder + image[10:], carimg)
         except:
             print("error")
-            cv2.imwrite('./output' + image[4:], carimg)
+            cv2.imwrite('./'+ folder + image[10:], carimg)
     else:
-        cv2.imwrite('./output' + image[4:], carimg)
-    return textArr
+        cv2.imwrite('./' + folder + image[10:], carimg)
+    return new_text
 
 
 def order_points(pts):
@@ -442,4 +592,5 @@ def order_points_old(pts):
 #check_king('./img/1200x900n.png')
 #read_and_image('./ru/a7d5685.jpg')
 #read_and_image('./by/thumb - 2021-02-03T195017.956.jpeg')
-read_and_image('./by/1440.jpeg')
+# read_and_image('./by/thumb - 2021-02-03T200211.778.jpeg','test1')
+# read_and_image('./by/3909.jpg','test1')
