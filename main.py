@@ -43,7 +43,6 @@ def check_circle(imagearr, arrpoints):
             if y - arrpoints[0][i][1] < 0.1*y and x - arrpoints[0][i][0] < 0.1*x:
                 circle = True
 
-
     return circle
 
 
@@ -72,7 +71,7 @@ def check_size(imagearr, arrpoints):
 
 
 def find_biggest(arrpoint):
-    lengths = [0, 0, 0 ]
+    lengths = [0, 0, 0]
     print(arrpoint)
     for i in range(len(arrpoint)):
         print(i)
@@ -229,6 +228,89 @@ def check_number_by(text):
             return text
 
 
+def check_number_ru(text):
+    check = []
+    print(len(text))
+    if len(text) >= 5:
+        for j in range(len(text)):
+            if text[0].isnumeric():
+                if len(text) == 7:
+                    if j in {1, 2, 5, 6}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 3:
+                        if text[j] in {'A', 'B', 'E', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'Y', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 8:
+                    if j in {1, 2, 5, 6, 7}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    else:
+                        if text[j] in {'A', 'B', 'E', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'Y', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+            else:
+                if len(text) == 7:
+                    if j in {5, 6}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 4:
+                        if text[j] in {'A', 'B', 'E', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'Y', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 8:
+                    if j in {1, 2, 3, 6, 7}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    else:
+                        if text[j] in {'A', 'B', 'E', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'Y', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 9:
+                    if j in {1, 2, 3, 6, 7, 8}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    else:
+                        if text[j] in {'A', 'B', 'E', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'Y', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+                elif len(text) == 5:
+                    if j in {0, 4}:
+                        if text[j].isnumeric():
+                            check.append(True)
+                        else:
+                            check.append(False)
+                    elif j == 3:
+                        if text[j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
+                            check.append(True)
+                        else:
+                            check.append(False)
+
+    if False in check or not check:
+        print(check)
+        return False
+    else:
+
+        if len(text) >= 5:
+            return text
+
+
 # def check_number_by(text):
 #     check = []
 #
@@ -274,75 +356,8 @@ def add_text(image, text):
     return (image)
 
 
-def read_and_image(image ,folder):
+def read_and_image(image, folder, country):
     new_text = 0
-    # BLUR = 21
-    # CANNY_THRESH_1 = 10
-    # CANNY_THRESH_2 = 200
-    # MASK_DILATE_ITER = 10
-    # MASK_ERODE_ITER = 10
-    # MASK_COLOR = (0.0, 0.0, 1.0)  # In BGR format
-    # im = cv2.imread(image)
-    # imgray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY)
-    # edges = cv2.Canny(imgray, CANNY_THRESH_1, CANNY_THRESH_2)
-    # edges = cv2.dilate(edges, None)
-    # edges = cv2.erode(edges, None)
-    # #cv2.waitKey(100000)
-    # contour_info = []
-    # contours, hierarchy= cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-    # print(contours)
-    # # Previously, for a previous version of cv2, this line was:a
-    # #  contours, _ = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_NONE)
-    # # Thanks to notes from commenters, I've updated the code but left this note
-    # for c in contours:
-    #     contour_info.append((
-    #         c,
-    #         cv2.isContourConvex(c),
-    #         cv2.contourArea(c),
-    #     ))
-  #  contour_info = sorted(contour_info, key=lambda c: c[2], reverse=True)
- #   max_contour = contour_info[0]
- #   print(max_contour)
-    #cv2.drawContours(im,max_contour,0,(0,255,0), 3)
- #   ellipse = cv2.fitEllipse(max_contour[0])
- #   print(ellipse)
-  #  little_ellipse_width = ellipse[1][0]
-   # little_ellipse_height = ellipse[1][1]
-   # little_ellipse = ((ellipse[0][0],ellipse[0][1]), (little_ellipse_width, little_ellipse_height), ellipse[2])
-    #cv2.ellipse(im, little_ellipse, (0, 255, 0), 2)
-   # cv2.imshow("1223", im)
-   # cv2.waitKey()
-
-
-    # -- Create empty mask, draw filled polygon on it corresponding to largest contour ----
-    # Mask is black, polygon is white
-    #mask = np.zeros(edges.shape)
-    #cv2.fillConvexPoly(mask, max_contour[0], (255))
-    #cv2.imshow("123",mask)
-    #cv2.waitKey()
-
-    # -- Smooth mask, then blur it --------------------------------------------------------
-    #mask = cv2.dilate(mask, None, iterations=MASK_DILATE_ITER)
-    #mask = cv2.erode(mask, None, iterations=MASK_ERODE_ITER)
-    #mask = cv2.GaussianBlur(mask, (BLUR, BLUR), 0)
-    #mask_stack = np.dstack([mask] * 3)  # Create 3-channel alpha mask
-
-    # -- Blend masked img into MASK_COLOR background --------------------------------------
-    #mask_stack = mask_stack.astype('float32') / 255.0  # Use float matrices,
-    #img = im.astype('float32') / 255.0  # for easy blending
-
-    #masked = (mask_stack * img) + ((1 - mask_stack) * MASK_COLOR)  # Blend
-    #masked = (masked * 255).astype('uint8')  # Convert back to 8-bit
-
-    # cv2.imwrite('img.jpg', im)  # Display
-  #  cv2.waitKey()
-   # cv2.imshow("123",thresh)
-   # cv2.waitKey(20000)
-    #cv2.imshow("123",im)
-    #cv2.waitKey(20000)
-
-    #print(image[-4:])
-
     if image[-4:] == '.png':
         new_image = cv2.imread(image)
         cv2.imwrite(image[:-4] + '.jpg',new_image)
@@ -359,8 +374,10 @@ def read_and_image(image ,folder):
 
     optionsDetector = OptionsDetector()
     optionsDetector.load("latest")
-
-    textDetector = TextDetector.get_static_module("by")()
+    if country == 'by':
+        textDetector = TextDetector.get_static_module("by")()
+    elif country == 'ru':
+        textDetector = TextDetector.get_static_module("ru")()
     textDetector.load("latest")
 
     nnet = Detector()
@@ -407,7 +424,10 @@ def read_and_image(image ,folder):
                     if len(textArr[i]) == 7:
                         largest_text = i
                 print(textArr[largest_text])
-                new_text = check_number_by(textArr[largest_text])
+                if country == 'by':
+                    new_text = check_number_by(textArr[largest_text])
+                elif country == 'ru':
+                    new_text = check_number_ru(textArr[largest_text])
                 if new_text:
                     carimg = add_text(carimg, new_text)
                     # cv2.imshow('123', carimg)
@@ -594,3 +614,5 @@ def order_points_old(pts):
 #read_and_image('./by/thumb - 2021-02-03T195017.956.jpeg')
 # read_and_image('./by/thumb - 2021-02-03T200211.778.jpeg','test1')
 # read_and_image('./by/3909.jpg','test1')
+# read_and_image('./d32ea95.jpg','test2/','ru')
+read_and_image('./test2/d32ea95.jpg', 'test2/', 'ru')

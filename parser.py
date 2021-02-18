@@ -13,6 +13,8 @@ import urllib.request
 import os
 from os import path
 from main import read_and_image
+import time
+
 
 def save_images(car):
     print("here")
@@ -45,13 +47,10 @@ def save_images(car):
                 os.mkdir("./" + date)
             for image in image_list:
                 urllib.request.urlretrieve(image, "./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg')
-                read_and_image("./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg',  date + '/' )
+                read_and_image("./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg',  date + '/', country='by')
             file = open('checked.txt', "a")
             file.write(adname + '\n')
             file.close()
-
-
-
 
 
 def find_car(marks_link):
@@ -60,9 +59,10 @@ def find_car(marks_link):
     driver.get(marks_link)
     # driver.find_element_by_xpath('//a[@href="' + marks_link[18:] + '"]').click()
     # print(marks_link[23:])
-    for ad in driver.find_elements_by_xpath('//a[contains(@href,"'+ marks_link[23:] +'")]'):
+    ads = driver.find_element_by_class_name('box-result-sort-auto')
+    for ad in ads.find_elements_by_css_selector('a'):
         car_list.append(ad.get_attribute("href"))
-    # print(car_list)
+    print(car_list)
     for car in car_list:
         # print(car[18:30])
         # print(marks_link[18:30])
@@ -99,32 +99,37 @@ driver = webdriver.Chrome(executable_path='./chromedriver',options=chrome_option
 # driver = webdriver.Chrome(ChromeDriverManager().install())
 driver.wait = WebDriverWait(driver, 5)
 driver.get('https://forsage.by/')
-marks_links = []
+region_links = []
 # Поиск тегов по имени
 # links = WebDriverWait(driver, 10).until(EC.presence_of_all_elements_located((By.LINK_TEXT, "/auto/acura/")))
 # references = [link.get_attribute("href") for link in links]
 # print(references)
-for banners in  driver.find_elements_by_class_name('list-auto-without-logo'):
-    # marks_list = driver.find_element_by_class_name('wrapper clearfix')
-    elems = driver.find_elements_by_xpath("//a[contains(@href, '/auto/')]")
-    # elems = driver.findElement(By.cssSelector("a[href*='/auto/']"))
-    for elem in elems:
-        marks_links.append(elem.get_attribute("href"))
-    print(marks_links)
-    begin = marks_links.index('https://forsage.by/auto/acura/')
-    end = marks_links.index('https://forsage.by/auto/uaz/')
-    marks_links = marks_links[begin:end]
-    print(marks_links)
-    for marks_link in marks_links:
-        find_car(marks_link)
-        # driver.find_element_by_xpath('//a[@href="' + marks_link[18:] + '"]').click()
-        # # elems = driver.find_elements_by_xpath("//a[contains(@href, '{marks_link[23:]}')]")
-        # for ad in driver.find_elements_by_xpath("//a[contains(@href, '{marks_link[23:]}')]"):
-        #     print(ad.get_attribute("href"))
-        # for ad in driver.find_element_by_xpath('//a[@href="' + marks_link[23:] + '"]'):
-        #     print(ad.get_attribute("href"))
-
-
-
-# password = browser.find_element_by_name('ctl00$MainContent$ctlLogin$_Password')
-# login = browser.find_element_by_name('ctl00$MainContent$ctlLogin$BtnSubmit')
+# driver.find_element_by_xpath("//a[contains(@href, '#region_popup')]").click()
+driver.find_element_by_class_name('popup_link').click()
+time.sleep(5)
+region_list = driver.find_element_by_class_name('region_list')
+regions = region_list.find_elements_by_css_selector('a')
+for region in regions:
+    region_links.append(region.get_attribute("href"))
+print("links")
+print(region_links)
+for region in region_links:
+    driver.get(region)
+    print(region)
+    marks_links = []
+    for banners in driver.find_elements_by_class_name('list-auto-without-logo'):
+        # marks_list = driver.find_element_by_class_name('wrapper clearfix')
+        # elems = driver.find_elements_by_xpath("//a[contains(@href, '/auto/')]")
+        elems = banners.find_elements_by_css_selector('a')
+        # elems = driver.findElement(By.cssSelector("a[href*='/auto/']"))
+        for elem in elems:
+            marks_links.append(elem.get_attribute("href"))
+        print(marks_links)
+        for marks_link in marks_links:
+            find_car(marks_link)
+            # driver.find_element_by_xpath('//a[@href="' + marks_link[18:] + '"]').click()
+            # # elems = driver.find_elements_by_xpath("//a[contains(@href, '{marks_link[23:]}')]")
+            # for ad in driver.find_elements_by_xpath("//a[contains(@href, '{marks_link[23:]}')]"):
+            #     print(ad.get_attribute("href"))
+            # for ad in driver.find_element_by_xpath('//a[@href="' + marks_link[23:] + '"]'):
+            #     print(ad.get_attribute("href"))
