@@ -3,6 +3,8 @@ from waitress import serve
 from main import read_and_image
 import os
 import requests
+from os import path
+
 
 app = Flask(__name__)
 
@@ -13,6 +15,8 @@ def carident(country, date):
     image = request.files['file']
     print(image.filename)
     print(image)
+    if path.exists("./" + date) is False:
+        os.mkdir("./" + date)
     image.save(os.path.join('./' + date, image.filename))
     car_number = read_and_image('./' + date + '/' + image.filename, date + '/', country)
     url = 'https://forsage.by/_utils/car_number_uploader.php'
