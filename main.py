@@ -14,7 +14,7 @@ import glob
 import imutils
 
 # NomeroffNet path
-NOMEROFF_NET_DIR = os.path.abspath('../../nomeroff-net')
+NOMEROFF_NET_DIR = os.path.abspath('../nomeroff-net')
 sys.path.append(NOMEROFF_NET_DIR)
 
 # Import license plate recognition tools.
@@ -26,92 +26,51 @@ from NomeroffNet import  TextDetector
 from NomeroffNet import  textPostprocessing
 from NomeroffNet import  ImgGenerator
 
-# load models
-
-def check_circle(imagearr, arrpoints):
-    y = imagearr.shape[0]
-    x = imagearr.shape[1]
-    circle = False
-    print(y)
-    print(x)
-    print(0.2*y)
-    print(0.2*x)
-    if arrpoints.size != 0:
-        for i in range(len(arrpoints[0])):
-            print(y - arrpoints[0][i][1])
-            print(x - arrpoints[0][i][0])
-            if y - arrpoints[0][i][1] < 0.1*y and x - arrpoints[0][i][0] < 0.1*x:
-                circle = True
-
-    return circle
-
 
 def check_size(imagearr, arrpoints):
+    """Проверка размеров найденного прямоугольника относительно пропорций"""
     x = imagearr.shape[0]
     y = imagearr.shape[1]
     lower = 0.01
     upper = 0.9
-    print(y)
-    print(x)
     length1 = abs(arrpoints[0][0][0] - arrpoints[0][1][0])
-    print(length1)
     length2 = abs(arrpoints[0][3][0] - arrpoints[0][2][0])
-    print(length2)
     heigth1 = abs(arrpoints[0][0][1] - arrpoints[0][3][1])
-    print(heigth1)
     heigth2 = abs(arrpoints[0][1][1] - arrpoints[0][2][1])
-    print(heigth2)
     check = True
-    print(x*lower)
-    print(y*lower)
     if x*lower > length1 or x*lower > length2 or y*lower > heigth1 or y*lower > heigth2 or x*upper < length1 or x*upper < length2 or y*upper < heigth1 or y*upper < heigth2:
         check = False
-    print(check)
     return check
 
 
 def find_biggest(arrpoint):
+    """Нахождение наибольшего прямоугольника на изображении"""
     lengths = [0, 0, 0]
-    print(arrpoint)
     for i in range(len(arrpoint)):
-        print(i)
         lengths[i] = (abs(arrpoint[i][0][0] - arrpoint[i][-1][0]) * abs(arrpoint[i][0][1] - arrpoint[i][1][0]))
-        print(lengths[i])
     largest = lengths.index(max(lengths))
     return largest
 
 
 def check_minus(arrPoints):
+    """Проверка координат с разностью меньше 1"""
     sorting = []
     for i in range(len(arrPoints[0]) - 1):
         for j in range(i + 1, len(arrPoints[0])):
-            print(int(arrPoints[0][i][0]))
-            print(int(arrPoints[0][j][0]))
             if abs(arrPoints[0][i][0] - arrPoints[0][j][0]) < 1:
                 print("Есть одинаковые")
                 sorting.append(0)
-
             else:
                 sorting.append(1)
                 print("Все элементы уникальны")
-        # for j in range(i + 1, len(arrPoints[0])):
-        #     print(int(arrPoints[0][i][0]))
-        #     print(int(arrPoints[0][j][0]))
-        #     if abs(arrPoints[0][i][0] - arrPoints[0][j][0]) < 1 and abs(arrPoints[0][i][1] - arrPoints[0][j][1]) < 1:
-        #         print("Есть одинаковые")
-        #         print(sorting)
-        #         sorting.append(False)
-        #         break
-        #         return sorting
     return sorting
 
 
 def check_equals(arrPoints):
+    """Проверка полностью идентичных координат"""
     sorting = []
     for i in range(len(arrPoints[0]) - 1):
         for j in range(i + 1, len(arrPoints[0])):
-            print(int(arrPoints[0][i][0]))
-            print(int(arrPoints[0][j][0]))
             if int(arrPoints[0][i][0]) == int(arrPoints[0][j][0]):
                 print("Есть одинаковые")
                 sorting.append(0)
@@ -124,9 +83,9 @@ def check_equals(arrPoints):
 
 
 def check_number_by(text):
+    """Проверка белорусских номеров"""
     check = []
     if len(text) >= 5:
-        print("1")
         for j in range(len(text)):
             if text[0].isnumeric():
                 if len(text) == 7:
@@ -220,7 +179,6 @@ def check_number_by(text):
                             check.append(False)
 
     if False in check or not check:
-        print(check)
         return False
     else:
 
@@ -229,8 +187,8 @@ def check_number_by(text):
 
 
 def check_number_ru(text):
+    """Проверка российских номеров"""
     check = []
-    print(len(text))
     if len(text) >= 5:
         for j in range(len(text)):
             if text[0].isnumeric():
@@ -303,7 +261,6 @@ def check_number_ru(text):
                             check.append(False)
 
     if False in check or not check:
-        print(check)
         return False
     else:
 
@@ -311,31 +268,9 @@ def check_number_ru(text):
             return text
 
 
-# def check_number_by(text):
-#     check = []
-#
-#     for i in range(len(text)):
-#         if len(text[i]) == 7:
-#             for j in range(len(text[i])):
-#                 if j in {0,1,2,3,6}:
-#                     if text[i][j].isnumeric():
-#                         check.append(text[i])
-#                 #     else:
-#                 #         check.append(False)
-#                 # else:
-#                 #     if text[i][j] in {'A', 'B', 'E', 'I', 'K', 'M', 'H', 'O', 'P', 'C', 'T', 'X'}:
-#                 #         check.append(True)
-#                 #     else:
-#                 #         check.append(False)
-#
-#     if False in check or not check:
-#         return False
-#     else:
-#         for i in range(len(text)):
-#             if len(text[i]) == 7:
-#                 return text[i]
-
 def add_text(image, text):
+    """Добавляет распознанный номер на картинку"""
+
     font = cv2.FONT_HERSHEY_SIMPLEX
 
     # org
@@ -362,14 +297,12 @@ def read_and_image(image, folder, country):
         new_image = cv2.imread(image)
         cv2.imwrite(image[:-4] + '.jpg',new_image)
         image = image[:-4] + '.jpg'
-        print(image)
 
     if image[-5:] == '.jpeg':
         new_image = cv2.imread(image)
         cv2.imwrite(image[:-5] + '.jpg', new_image)
         image = image[:-5] + '.jpg'
-        print(image)
-    print(image[10:])
+
     rectDetector = RectDetector()
 
     optionsDetector = OptionsDetector()
@@ -411,62 +344,23 @@ def read_and_image(image, folder, country):
                 # find standart
                 regionIds, stateIds, countLines = optionsDetector.predict(zones)
                 regionNames = optionsDetector.getRegionLabels(regionIds)
-                print(arrPoints)
                 # 0 = find_biggest(arrPoints)
 
                 # find text with postprocessing by standart
                 textArr = textDetector.predict(zones)
                 textArr = textPostprocessing(textArr, regionNames)
-                print(textArr)
-                # textArr = np.sort(textArr, axis=0)
                 largest_text = textArr.index(max(textArr, key=len))
                 for i in range(len(textArr)):
                     if len(textArr[i]) == 7:
                         largest_text = i
-                print(textArr[largest_text])
                 if country == 'by':
                     new_text = check_number_by(textArr[largest_text])
                 elif country == 'ru':
                     new_text = check_number_ru(textArr[largest_text])
                 if new_text:
-                    carimg = add_text(carimg, new_text)
-                    # cv2.imshow('123', carimg)
-                    # cv2.waitKey()
                     x_tuple = []
                     y_tuple = []
-                    # is_circle = check_circle(carimg, arrPoints)
-                    """
-                    #arrPoints = np.sort(arrPoints, axis=1)
-                    s = arrPoints.sum(axis=2)
-                    print(s)
-                    #s = arrPoints.sum(axis=2)
-                    print(s)
-                    rect = np.zeros_like(arrPoints)
-                    rect[0][0] = arrPoints[0][np.argmin(s)]
-                    rect[0][2] = arrPoints[0][np.argmax(s)]
-                    diff = np.diff(arrPoints, axis=2)
-                    print(diff)
-                    rect[0][1] = arrPoints[0][np.argmin(diff)]
-                    rect[0][3] = arrPoints[0][np.argmax(diff)]
-                    print(rect)
-                    """
-                    # splashs = filters.color_splash(img, cv_img_masks)
-                    # for splash in splashs:
-                    #     plt.imshow(splash)
-                    #     plt.axis("off")
-                    #     plt.show()
-
-                    # print(is_circle)
                     if arrPoints.size != 0 and arrPoints[0].size < 24:
-                        # if arrPoints.size > 8:
-                        #     for i in range(arrPoints[0].size):
-                        #         summa1= arrPoints[0].sum(axis=1)
-                        #         summa2= arrPoints[1].sum(axis=1)
-                        #         summa1 = summa1.sum(axis=0)
-                        #         summa2 = summa2.sum(axis=0)
-                        #     if summa1< summa2:
-                        #         arrPoints[0] = arrPoints[1]
-
                         sorting = check_minus(arrPoints)
                         same = sorting.count(0)
                         if same == 0 or same == 2:
@@ -481,25 +375,17 @@ def read_and_image(image, folder, country):
 
                         if size_check:
                             for i in range(len(arrPoints[0])):
-                                # print(arrPoints[0][i])
                                 if arrPoints[0][i][0] < 0:
                                     arrPoints[0][i][0] = 0
                                 if arrPoints[0][i][1] < 0:
                                     arrPoints[0][i][1] = 0
                                 x_tuple.append(arrPoints[0][i][0])
                                 y_tuple.append(arrPoints[0][i][1])
-                            # print(x_tuple)
-                            # print(y_tuple)
                             up_left = [int(x_tuple[0]), int(y_tuple[0])]
-                            # print(up_left)
                             up_right = [int(x_tuple[1]), int(y_tuple[1])]
-                            # print(up_right)
                             down_left = [int(x_tuple[3]), int(y_tuple[3])]
-                            # print(down_left)
                             down_right = [int(x_tuple[2]), int(y_tuple[2])]
-                            # print(down_right)
                             height_carimg, width_carimg, ch1 = carimg.shape
-                            #print(x_tuple)
 
                             logoimg = cv2.imread('./gosnomer_evropa.png')
                             img2gray = cv2.cvtColor(logoimg, cv2.COLOR_BGR2GRAY)
@@ -510,17 +396,11 @@ def read_and_image(image, folder, country):
                             #logoimg = np.dstack([bgr, alpha])  # Add the alpha channe
 
                             logoimg = cv2.resize(logoimg, (height_carimg, width_carimg))
-                            # width = width_carimg
-                            # height = height_carimg
+
                             height_logoimg, width_logoimg, ch = logoimg.shape
                             coef_width = width_logoimg / width_carimg
                             coef_height = height_logoimg / height_carimg
 
-                            # print(height_logoimg)
-                            # print(width_logoimg)
-
-                            # print(width)
-                            # print(height)
                             pts1 = np.float32([up_left, up_right, down_left, down_right])
                             pts2 = np.float32([[0, 0], [width_logoimg, 0], [0, height_logoimg], [width_logoimg, height_logoimg]])
                             M = cv2.getPerspectiveTransform(pts2, pts1)
@@ -532,28 +412,19 @@ def read_and_image(image, folder, country):
                             img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
                             img2_fg = cv2.bitwise_and(dst, dst, mask=mask)
                             dst = cv2.add(img1_bg, img2_fg)
-
-
                             carimg[0:height_carimg, 0:width_carimg] = dst
-                            # cv2.imshow('123',carimg)
-                            # cv2.waitKey()
-                            # splashs = filters.color_splash(carimg, cv_img_masks)
-                            # for splash in splashs:
-                            #     plt.imshow(splash)
-                            #     plt.axis("off")
-                            #     plt.show()
-                            cv2.imwrite('./' + folder + image[10:], carimg)
+                            cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
                         else:
-                            cv2.imwrite('./' + folder + image[10:], carimg)
+                            cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
                     else:
-                        cv2.imwrite('./'+ folder + image[10:], carimg)
+                        cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
                 else:
-                    cv2.imwrite('./'+ folder + image[10:], carimg)
+                    cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
         except:
             print("error")
-            cv2.imwrite('./'+ folder + image[10:], carimg)
+            cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
     else:
-        cv2.imwrite('./' + folder + image[10:], carimg)
+        cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
     return new_text
 
 
@@ -589,30 +460,14 @@ def order_points_old(pts):
         # bottom-right, and the fourth is the bottom-left
         rect = np.zeros((4, 2), dtype="float32")
         # the top-left point will have the smallest sum, whereas
-        # the bottom-right point will have the largest sum
-        print("here")
-        print(pts)
         s = pts.sum(axis=1)
         rect[0] = pts[np.argmin(s)]
-        print(rect[0])
         rect[2] = pts[np.argmax(s)]
-        print(rect[2])
         # now, compute the difference between the points, the
         # top-right point will have the smallest difference,
         # whereas the bottom-left will have the largest difference
         diff = np.diff(pts, axis=1)
         rect[1] = pts[np.argmin(diff)]
-        print(rect[1])
         rect[3] = pts[np.argmax(diff)]
-        print(rect[3])
         # return the ordered coordinates
         return rect
-
-        # ['JJF509', 'RP70012']
-#check_king('./img/1200x900n.png')
-#read_and_image('./ru/a7d5685.jpg')
-#read_and_image('./by/thumb - 2021-02-03T195017.956.jpeg')
-# read_and_image('./by/thumb - 2021-02-03T200211.778.jpeg','test1')
-# read_and_image('./by/3909.jpg','test1')
-# read_and_image('./d32ea95.jpg','test2/','ru')
-read_and_image('./test2/d32ea95.jpg', 'test2/', 'ru')

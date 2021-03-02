@@ -38,19 +38,22 @@ def save_images(car):
     print(image_names_list)
     adname = image_names_list[0].split('_')[0]
     with open('checked.txt') as f:
-        if adname in f.read():
-            print("true")
-            f.close()
-        else:
-            f.close()
-            if path.exists("./" + date) is False:
-                os.mkdir("./" + date)
-            for image in image_list:
-                urllib.request.urlretrieve(image, "./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg')
+        # if adname in f.read():
+        #     print("true")
+        #     f.close()
+        # else:
+        #     f.close()
+        if path.exists("./" + date) is False:
+            os.mkdir("./" + date)
+        for image in image_list:
+            urllib.request.urlretrieve(image, "./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg')
+            try:
                 read_and_image("./" + date + "/" + image_names_list[image_list.index(image)] + '.jpg',  date + '/', country='by')
-            file = open('checked.txt', "a")
-            file.write(adname + '\n')
-            file.close()
+            except:
+                print('cannot read image')
+        file = open('checked.txt', "a")
+        file.write(adname + '\n')
+        file.close()
 
 
 def find_car(marks_link):
@@ -72,16 +75,29 @@ def find_car(marks_link):
     true_car_list = list(dict.fromkeys(true_car_list))
     print(true_car_list)
     for true_car in true_car_list:
+        print('here')
         print(true_car[18:])
-        # driver.find_element_by_xpath('//a[@href="' + true_car[18:] + '"]').click()
-        save_images(true_car)
-        # # driver.wait = WebDriverWait(driver, 5)
-        # for img in driver.find_elements_by_xpath('//a[contains(@href, "/img/")]'):
-        #     print(img.get_attribute("href"))
-        # driver.execute_script("window.history.go(-1)")
-        # driver.execute_script("window.history.go(-1)")
-        driver.get(marks_link)
-        print(driver.current_url)
+        new_car = true_car[18:]
+        new_car = new_car.split('/')
+        new_car = new_car[-1].split('-')
+        new_car = new_car[0]
+        print(new_car)
+        with open('checked.txt') as f:
+            if new_car in f.read():
+                print("true")
+                f.close()
+            else:
+                f.close()
+
+            # driver.find_element_by_xpath('//a[@href="' + true_car[18:] + '"]').click()
+                save_images(true_car)
+                # # driver.wait = WebDriverWait(driver, 5)
+                # for img in driver.find_elements_by_xpath('//a[contains(@href, "/img/")]'):
+                #     print(img.get_attribute("href"))
+                # driver.execute_script("window.history.go(-1)")
+                # driver.execute_script("window.history.go(-1)")
+                driver.get(marks_link)
+                print(driver.current_url)
     # driver.execute_script("window.history.go(-2)")
 
 
