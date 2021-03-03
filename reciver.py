@@ -9,8 +9,8 @@ from os import path
 app = Flask(__name__)
 
 
-@app.route('/carident/<country>/<date>', methods=['POST'])
-def carident(country, date):
+@app.route('/carident/<country>/<date>/<id>', methods=['POST'])
+def carident(country, date, id):
     print('re')
     image = request.files['file']
     print(image.filename)
@@ -19,9 +19,10 @@ def carident(country, date):
         os.mkdir("./" + date)
     image.save(os.path.join('./' + date, image.filename))
     car_number = read_and_image('./' + date + '/' + image.filename, date + '/', country)
+    print(date)
     url = 'https://forsage.by/_utils/car_number_uploader.php'
     files = {'file': open('./' + date + '/' + image.filename[:-4] + '.jpeg', 'rb')}
-    foo = requests.post(url, files=files, data={'date': date, 'car_number': car_number})
+    foo = requests.post(url, files=files, data={'date': date, 'number': car_number, 'id': id})
     os.remove('./' + date + '/' + image.filename)
     if car_number:
         os.remove('./' + date + '/' + image.filename[:-4] + '.jpeg')
