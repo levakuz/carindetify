@@ -1,8 +1,14 @@
 from requests import post
-
-url = 'http://195.2.74.79:8001/carident/by/2021-03/816269'
+import base64
+url = 'http://192.168.1.105:8001/carident/by/'
 # files = {'file': open('img.jpg', 'rb')}
 # foo = post('http://0.0.0.0:8001/caident/by/2021.01', files=files)
 files = {'file': open('1440.jpg', 'rb')}
 foo = post(url, files=files, verify=False)
+print(foo.json())
+new_json = foo.json()
+imgdata = base64.b64decode(new_json['img'])
+filename = 'some_image.jpg'  # I assume you have a way of picking unique filenames
+with open(filename, 'wb') as f:
+    f.write(imgdata)
 # x = requests.post(url, data = json.dumps(myobj))

@@ -291,7 +291,7 @@ def add_text(image, text):
     return (image)
 
 
-def read_and_image(image, folder, country):
+def read_and_image(image, country):
     new_text = 0
     if image[-4:] == '.png':
         new_image = cv2.imread(image)
@@ -413,18 +413,18 @@ def read_and_image(image, folder, country):
                             img2_fg = cv2.bitwise_and(dst, dst, mask=mask)
                             dst = cv2.add(img1_bg, img2_fg)
                             carimg[0:height_carimg, 0:width_carimg] = dst
-                            cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
+                            cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
                         else:
-                            cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
+                            cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
                     else:
-                        cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
+                        cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
                 else:
-                    cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
+                    cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
         except:
             print("error")
-            cv2.imwrite('./'+ folder + image[10:-4] + '.jpeg', carimg)
+            cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
     else:
-        cv2.imwrite('./' + folder + image[10:-4] + '.jpeg', carimg)
+        cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
     return new_text
 
 
