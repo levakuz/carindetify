@@ -14,7 +14,7 @@ import glob
 import imutils
 
 # NomeroffNet path
-NOMEROFF_NET_DIR = os.path.abspath('../../nomeroff-net')
+NOMEROFF_NET_DIR = os.path.abspath('../nomeroff-net')
 sys.path.append(NOMEROFF_NET_DIR)
 
 # Import license plate recognition tools.
