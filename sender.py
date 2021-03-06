@@ -1,9 +1,9 @@
 from requests import post
 import base64
-url = 'http://192.168.1.105:8001/carident/by/'
+url = 'http://192.168.1.105:8001/carident/ru/'
 # files = {'file': open('img.jpg', 'rb')}
 # foo = post('http://0.0.0.0:8001/caident/by/2021.01', files=files)
-files = {'file': open('1440.jpg', 'rb')}
+files = {'file': open('d32ea95.jpg', 'rb')}
 foo = post(url, files=files, verify=False)
 print(foo.json())
 new_json = foo.json()
