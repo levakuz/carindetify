@@ -12,9 +12,10 @@ import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import glob
 import imutils
+import threading
 
 # NomeroffNet path
-NOMEROFF_NET_DIR = os.path.abspath('../nomeroff-net')
+NOMEROFF_NET_DIR = os.path.abspath('../../nomeroff-net')
 sys.path.append(NOMEROFF_NET_DIR)
 
 # Import license plate recognition tools.
@@ -292,6 +293,7 @@ def add_text(image, text):
 
 
 def read_and_image(image, country):
+    global carimg
     new_text = 0
     if image[-4:] == '.png':
         new_image = cv2.imread(image)
@@ -325,6 +327,8 @@ def read_and_image(image, country):
     # Generatce image mask.
     cv_imgs_masks = nnet.detect_mask([img])
     #cv2.imshow("123",cv_imgs_masks)
+    th2 = threading.Thread(target=nnet.detect_mask, args=([img]))
+    th2.start()
     carimg = cv2.imread(image)
     if cv_imgs_masks:
         try:
@@ -354,13 +358,19 @@ def read_and_image(image, country):
                     if len(textArr[i]) == 7:
                         largest_text = i
                 if country == 'by':
+                    th3 = threading.Thread(target=check_number_by, args=(textArr[largest_text]))
+                    th3.start()
                     new_text = check_number_by(textArr[largest_text])
                 elif country == 'ru':
+                    th4 = threading.Thread(target=check_number_ru, args=(textArr[largest_text]))
+                    th4.start()
                     new_text = check_number_ru(textArr[largest_text])
                 if new_text:
                     x_tuple = []
                     y_tuple = []
                     if arrPoints.size != 0 and arrPoints[0].size < 24:
+                        th5 = threading.Thread(target=check_minus, args=(arrPoints))
+                        th5.start()
                         sorting = check_minus(arrPoints)
                         same = sorting.count(0)
                         if same == 0 or same == 2:
@@ -401,18 +411,10 @@ def read_and_image(image, country):
                             coef_width = width_logoimg / width_carimg
                             coef_height = height_logoimg / height_carimg
 
-                            pts1 = np.float32([up_left, up_right, down_left, down_right])
-                            pts2 = np.float32([[0, 0], [width_logoimg, 0], [0, height_logoimg], [width_logoimg, height_logoimg]])
-                            M = cv2.getPerspectiveTransform(pts2, pts1)
-                            dst = cv2.warpPerspective(logoimg, M, (height_logoimg, width_logoimg))
-                            img2gray = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
-                            ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
-                            mask_inv = cv2.bitwise_not(mask)
-                            roi = carimg[0:height_carimg, 0:width_carimg]
-                            img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
-                            img2_fg = cv2.bitwise_and(dst, dst, mask=mask)
-                            dst = cv2.add(img1_bg, img2_fg)
-                            carimg[0:height_carimg, 0:width_carimg] = dst
+                            th6 = threading.Thread(target=make_image, args=(up_left,up_right,down_left, down_right, width_logoimg, height_logoimg, logoimg, height_carimg, width_carimg))
+                            th6.start()
+
+
                             cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
                         else:
                             cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
@@ -423,11 +425,29 @@ def read_and_image(image, country):
         except:
             print("error")
             cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
+        th1 = threading.Thread(target=rectDetector.detect, args=(cv_img_masks))
+        th1.start()
     else:
         cv2.imwrite('./' + image[0:-4] + '.jpeg', carimg)
+
+
+
     return new_text
 
 
+def make_image(up_left,up_right,down_left, down_right, width_logoimg, height_logoimg, logoimg, height_carimg, width_carimg):
+    pts1 = np.float32([up_left, up_right, down_left, down_right])
+    pts2 = np.float32([[0, 0], [width_logoimg, 0], [0, height_logoimg], [width_logoimg, height_logoimg]])
+    M = cv2.getPerspectiveTransform(pts2, pts1)
+    dst = cv2.warpPerspective(logoimg, M, (height_logoimg, width_logoimg))
+    img2gray = cv2.cvtColor(dst, cv2.COLOR_BGR2GRAY)
+    ret, mask = cv2.threshold(img2gray, 10, 255, cv2.THRESH_BINARY)
+    mask_inv = cv2.bitwise_not(mask)
+    roi = carimg[0:height_carimg, 0:width_carimg]
+    img1_bg = cv2.bitwise_and(roi, roi, mask=mask_inv)
+    img2_fg = cv2.bitwise_and(dst, dst, mask=mask)
+    dst = cv2.add(img1_bg, img2_fg)
+    carimg[0:height_carimg, 0:width_carimg] = dst
 def order_points(pts):
         # sort the points based on their x-coordinates
         xSorted = pts[np.argsort(pts[:, 0]), :]

@@ -43,10 +43,11 @@ def carident(country):
         return jsonify(response)
 
 th1 = threading.Thread(target=serve(app, host='0.0.0.0', port=8001))
-th2 = threading.Thread(target=carident, args=(cont, file))
+th2 = threading.Thread(target=carident, args=(cont, file), deamon=True)
 th1.start()
 th2.start()
-
+th1.join()
+th2.join()
 
 
 
